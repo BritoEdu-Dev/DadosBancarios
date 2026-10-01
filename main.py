@@ -128,7 +128,7 @@ while True:
         criar_usuario()
 
     elif opcao == "5":
-        criar_conta()
+        criar_conta_corrente()
 
     elif opcao == "6":
         print("Saindo do sistema...")

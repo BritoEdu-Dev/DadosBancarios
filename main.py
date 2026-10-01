@@ -1,4 +1,59 @@
 from datetime import datetime
+import re
+
+saldo = 0 
+banco_de_dados_usuarios = []
+limite = 500
+extrato = ""
+numero_saques = 0
+LIMITE_SAQUES = 10
+
+def criar_usuario():
+    nome = input("Digite o nome do usuário: ")
+    cpf = input("Digite o seu CPF: ")
+    cpf_formatado = validar_formato_cpf(cpf)
+
+    # 2. Verificação de unicidade
+    if cpf_ja_cadastrado(cpf_formatado):
+        raise ValueError(
+            f"Erro: O CPF {cpf_formatado} já está registado no sistema."
+        )
+    data_nascimento = input("Digite a data de nascimento do usuário (dd/mm/aaaa): ")
+    endereco = input("Digite o endereço do usuário: ")
+    
+    usuario = {
+        "id": len(banco_de_dados_usuarios) + 1,
+        "nome": nome,
+        "cpf": cpf_formatado,
+        "data_nascimento": data_nascimento,
+        "endereco": endereco
+    }
+    
+    banco_de_dados_usuarios.append(usuario)
+    print("Usuário criado com sucesso!")
+    return usuario
+
+def validar_formato_cpf(cpf: str) -> str:
+    cpf_limpo = re.sub(r"\D", "", cpf)
+    if len(cpf_limpo) != 11:
+        raise ValueError("O CPF deve conter exatamente 11 dígitos.")
+    return cpf_limpo
+
+
+def cpf_ja_cadastrado(cpf: str) -> bool:
+    return any(
+        usuario["cpf"] == cpf for usuario in banco_de_dados_usuarios
+    )
+
+def criar_conta_corrente():
+    global saldo, extrato, numero_saques, agencia, conta, usuario
+    usuario = criar_usuario()
+    agencia = "0001"
+    conta = len(banco_de_dados_usuarios) + 1
+    saldo = 0
+    extrato = ""
+    numero_saques = 0
+    print("Conta criada com sucesso!")
 
 def depositar():
     global saldo, extrato
@@ -33,19 +88,28 @@ def ver_extrato():
     print(f"Saldo atual: R$ {saldo:.2f}\n")
     print(f"Você realizou {numero_saques} saques hoje. Limite de saques diários: {LIMITE_SAQUES}.\n")
 
-menu = """Bem-vindo ao Desafio do Banco de Datas!
-Por favor, selecione uma opção:
-(1) Depositar
-(2) Sacar
-(3) Ver Extrato
-(4) Sair
+menu = """
+====================================
+------------------------------------
+====================================
 
+    Bem-vindo ao Banco Python!
+
+====================================
+------------------------------------
+====================================
+
+        (1) Depositar
+        (2) Sacar
+        (3) Ver Extrato
+        (4) Cadastrar Usuário
+        (5) Criar Conta
+        (6) Sair
+
+====================================
+------------------------------------
+====================================
 """
-saldo = 0 
-limite = 500
-extrato = ""
-numero_saques = 0
-LIMITE_SAQUES = 10
 
 while True:
 
@@ -61,6 +125,12 @@ while True:
         ver_extrato()
         
     elif opcao == "4":
+        criar_usuario()
+
+    elif opcao == "5":
+        criar_conta()
+
+    elif opcao == "6":
         print("Saindo do sistema...")
         break
 

@@ -7,7 +7,7 @@ menu = """"
 (3) Ver extrato
 (4) Sair
 
-Escolha uma opção: """
+"""
 
 saldo = 0 
 limite = 500
